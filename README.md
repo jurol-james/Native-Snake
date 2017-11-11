@@ -1,2 +1,2 @@
 # nativeSnake
-A single paged web game: Native Snake
+A single web page game: Native Snake
