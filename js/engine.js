@@ -30,6 +30,27 @@ var Engine = {
 
     },
     run : function () {
+        Snake.updatePosition(Canvas);
+
+        Canvas.updateCanvas();
+
+        Food.renderGraphics(Canvas);
+
+        Canvas.context.fillStyle="lime";
+        for(var i = 0; i< Snake.trail.length; i++){
+            Canvas.context.fillRect(Snake.trail[i].x * Canvas.gridSize, Snake.trail[i].y * Canvas.gridSize, Canvas.gridSize-2, Canvas.gridSize-2)
+            if(Snake.position.x == Snake.trail[i].x && Snake.position.y == Snake.trail[i].y){
+                Engine.stop();
+            }
+        }
+        Snake.trail.push({x:Snake.position.x, y: Snake.position.y});
+        while (Snake.trail.length > Snake.tail){
+            Snake.trail.shift();
+        }
+
+        Food.updatePosition(Snake,Canvas,Engine);
+        console.log(Engine.score+" " +Engine.level);
+        Canvas.scoreContainer.innerHTML = Engine.score + "";
 
     },
     stop : function () {
