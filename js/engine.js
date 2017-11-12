@@ -3,15 +3,8 @@ var Snake = require('./snake');
 var Food = require('./food');
 
 var Engine = {
-    engine : null,
-    score : 0,
-    level : 1,
-
 
     init : function () {
-
-
-
         Canvas.init();
         Snake.init(Canvas);
         Food.init(Canvas);
@@ -27,7 +20,6 @@ var Engine = {
 
         document.addEventListener("keydown", Engine.keyPush);
         document.addEventListener("keypress", Engine.keyPush);
-
     },
     run : function () {
         Snake.updatePosition(Canvas);
@@ -49,9 +41,7 @@ var Engine = {
         }
 
         Food.updatePosition(Snake,Canvas,Engine);
-        console.log(Engine.score+" " +Engine.level);
         Canvas.scoreContainer.innerHTML = Engine.score + "";
-
     },
     stop : function () {
         Engine.running = 0;
