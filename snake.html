@@ -23,169 +23,171 @@
 		<p>Press P to Pause/Play the game</p>
 		<p>Press R to restart the game if you fail</p>
 
-		<script>
-			var engine;
-			var canvas = document.getElementById("area");
-			var context = canvas.getContext("2d");
-			var dimensions = 400;
-			var scoreContainer = document.getElementById("score");
-			var levelContainer = document.getElementById("level");
+		<script type="text/javascript" src="bundle.js"></script>
+		<!--<script>-->
+			<!--var engine;-->
+			<!--var canvas = document.getElementById("area");-->
+			<!--var context = canvas.getContext("2d");-->
+			<!--var dimensions = 400;-->
+			<!--var scoreContainer = document.getElementById("score");-->
+			<!--var levelContainer = document.getElementById("level");-->
 
-			init();
-			function init(){
-				score=0;
-				level=1;
-				speedFactor = 10;
-				running = 1;
-				stopped = 0;
-				engine = setInterval(game,1000/speedFactor);
+			<!--init();-->
+			<!--function init(){-->
+				<!--score=0;-->
+                <!--level=1;-->
+                <!--speedFactor = 10;-->
+                <!--running = 1;-->
+                <!--stopped = 0;-->
+				<!--engine = setInterval(game,1000/speedFactor);-->
 
-				canvas.width = dimensions;
-				canvas.height = dimensions;
+				<!--canvas.width = dimensions;-->
+				<!--canvas.height = dimensions;-->
 
-				gridSize=Math.sqrt(canvas.width);
-				tileCount=Math.sqrt(canvas.width);
-				positionX=Math.floor(Math.random()*tileCount);
-				positionY=Math.floor(Math.random()*tileCount);
-				foodX = Math.floor(Math.random()*tileCount);
-				foodY = Math.floor(Math.random()*tileCount);
+				<!--gridSize=Math.sqrt(canvas.width);-->
+				<!--tileCount=Math.sqrt(canvas.width);-->
+				<!--positionX=Math.floor(Math.random()*tileCount);-->
+				<!--positionY=Math.floor(Math.random()*tileCount);-->
+				<!--foodX = Math.floor(Math.random()*tileCount);-->
+				<!--foodY = Math.floor(Math.random()*tileCount);-->
 
-				xVelocity=1; // to the right direction by default
-				yVelocity=0;
-				trail=[];
-				tail=5;
-				direction = -1; //if 0 sidewards, else if 1 up or downwards, else stop
+				<!--xVelocity=1; // to the right direction by default-->
+				<!--yVelocity=0;-->
+				<!--trail=[];-->
+				<!--tail=5;-->
+				<!--direction = -1; //if 0 sidewards, else if 1 up or downwards-->
 
-				scoreContainer.innerHTML = score + "";
-				levelContainer.innerHTML = level + "";
+				<!--scoreContainer.innerHTML = score + "";-->
+				<!--levelContainer.innerHTML = level + "";-->
 
-				document.addEventListener("keydown",keyPush);
-				document.addEventListener("keypress",keyPush);
-			}
+				<!--document.addEventListener("keydown",keyPush);-->
+				<!--document.addEventListener("keypress",keyPush);-->
+			<!--}-->
 
-			function game() {
-				positionX += xVelocity;
-				positionY += yVelocity;
-				if(positionX < 0){
-					positionX = tileCount - 1;
-				}
-				if(positionX > tileCount-1){
-					positionX = 0;
-				}
-				if(positionY < 0){
-					positionY = tileCount - 1;
-				}
-				if(positionY > tileCount-1){
-					positionY = 0;
-				}
+			<!--function game() {-->
+				<!--positionX += xVelocity;-->
+				<!--positionY += yVelocity;-->
+				<!--if(positionX < 0){-->
+					<!--positionX = tileCount - 1;-->
+				<!--}-->
+				<!--if(positionX > tileCount-1){-->
+					<!--positionX = 0;-->
+				<!--}-->
+				<!--if(positionY < 0){-->
+					<!--positionY = tileCount - 1;-->
+				<!--}-->
+				<!--if(positionY > tileCount-1){-->
+					<!--positionY = 0;-->
+				<!--}-->
 
-				context.fillStyle="black";
-				context.fillRect(0,0,canvas.width,canvas.height);
+				<!--context.fillStyle="black";-->
+				<!--context.fillRect(0,0,canvas.width,canvas.height);-->
 
-				context.fillStyle="yellow";
-				context.fillRect(foodX*gridSize, foodY*gridSize, gridSize-5, gridSize-5);
+				<!--context.fillStyle="yellow";-->
+				<!--context.fillRect(foodX*gridSize, foodY*gridSize, gridSize-5, gridSize-5);-->
 
-				context.fillStyle="lime";
-				for(var i = 0; i < trail.length; i++){
-					context.fillRect(trail[i].x*gridSize, trail[i].y*gridSize, gridSize-2, gridSize-2);
-					if(trail[i].x == positionX && trail[i].y == positionY){
-						stopGame();
-					}
-				}
-				trail.push({x:positionX,y:positionY});
-				while(trail.length>tail){
-					trail.shift();
-				}
+				<!--context.fillStyle="lime";-->
+				<!--for(var i = 0; i < trail.length; i++){-->
+					<!--context.fillRect(trail[i].x*gridSize, trail[i].y*gridSize, gridSize-2, gridSize-2);-->
+					<!--if(trail[i].x == positionX && trail[i].y == positionY){-->
+						<!--stopGame();-->
+					<!--}-->
+				<!--}-->
+				<!--trail.push({x:positionX,y:positionY});-->
+				<!--while(trail.length>tail){-->
+					<!--trail.shift();-->
+				<!--}-->
 
-				if(foodX == positionX && foodY == positionY){
-						tail++;
-						foodX = Math.floor(Math.random()*tileCount);
-						foodY = Math.floor(Math.random()*tileCount);
-						score += level*10;
-						scoreContainer.innerHTML=score+"";
-					}
-			}
+				<!--if(foodX == positionX && foodY == positionY){-->
+						<!--tail++;-->
+						<!--foodX = Math.floor(Math.random()*tileCount);-->
+						<!--foodY = Math.floor(Math.random()*tileCount);-->
+						<!--score += level*10;-->
+				<!--}-->
+                <!--scoreContainer.innerHTML=score+"";-->
 
-			function stopGame(){
-				running = 0;
-				stopped = 1;
-				clearInterval(engine);
-			}
+            <!--}-->
 
-			function keyPush(evt) {
+			<!--function stopGame(){-->
+				<!--running = 0;-->
+				<!--stopped = 1;-->
+				<!--clearInterval(engine);-->
+			<!--}-->
 
-				switch(evt.keyCode){
-					case 37:
-					case 65:// left
-							if(direction!=0){
-								xVelocity=-1;
-								yVelocity=0;
-								direction=0;
-							}
-							break;
-					case 38:
-					case 87:// up
-							if(direction!=1){
-								xVelocity=0;
-								yVelocity=-1;
-								direction=1;
-							}
-							break;
-					case 39:
-					case 68:// right
-							if(direction!=0){
-								xVelocity=1;
-								yVelocity=0;
-								direction = 0;
-							}
-							break;
-					case 40:
-					case 83:// down
-							if(direction!=1){
-								xVelocity=0;
-								yVelocity=1;
-								direction=1;
-							}
-							break;
-					case 80: // press p to pause or resume
-							if(running == 1 && stopped==0){
-								clearInterval(engine);
-								running = 0;
-							}
-							else if(running ==0 && stopped==0){
-								engine = setInterval(game,1000/speedFactor);
-								running = 1;
-							}
-							else{
-								init();
-							}
-							break;
-					case 82: // press r to restart
-							if(stopped == 1){
-								init();
-							}
-							break;
-					case 107: // press + to increase level and speed
-							if(level<10 && stopped == 0){
-								level++;
-								speedFactor+=2;
-								levelContainer.innerHTML=level+"";
-								clearInterval(engine);
-								engine = setInterval(game,1000/speedFactor);
-							}
-							break;
-					case 109: // press - to decrease level and speed
-							if(level>1 && stopped == 0){
-								level--;
-								speedFactor-=2;
-								levelContainer.innerHTML=level+"";
-								clearInterval(engine);
-								engine = setInterval(game,1000/speedFactor);
-							}
-							break;
-				}
-			}
+			<!--function keyPush(evt) {-->
 
-		</script>
+				<!--switch(evt.keyCode){-->
+					<!--case 37:-->
+					<!--case 65:// left-->
+							<!--if(direction!=0){-->
+								<!--xVelocity=-1;-->
+								<!--yVelocity=0;-->
+								<!--direction=0;-->
+							<!--}-->
+							<!--break;-->
+					<!--case 38:-->
+					<!--case 87:// up-->
+							<!--if(direction!=1){-->
+								<!--xVelocity=0;-->
+								<!--yVelocity=-1;-->
+								<!--direction=1;-->
+							<!--}-->
+							<!--break;-->
+					<!--case 39:-->
+					<!--case 68:// right-->
+							<!--if(direction!=0){-->
+								<!--xVelocity=1;-->
+								<!--yVelocity=0;-->
+								<!--direction = 0;-->
+							<!--}-->
+							<!--break;-->
+					<!--case 40:-->
+					<!--case 83:// down-->
+							<!--if(direction!=1){-->
+								<!--xVelocity=0;-->
+								<!--yVelocity=1;-->
+								<!--direction=1;-->
+							<!--}-->
+							<!--break;-->
+					<!--case 80: // press p to pause or resume-->
+							<!--if(running == 1 && stopped==0){-->
+								<!--clearInterval(engine);-->
+								<!--running = 0;-->
+							<!--}-->
+							<!--else if(running ==0 && stopped==0){-->
+								<!--engine = setInterval(game,1000/speedFactor);-->
+								<!--running = 1;-->
+							<!--}-->
+							<!--else{-->
+								<!--init();-->
+							<!--}-->
+							<!--break;-->
+					<!--case 82: // press r to restart-->
+							<!--if(stopped == 1){-->
+								<!--init();-->
+							<!--}-->
+							<!--break;-->
+					<!--case 107: // press + to increase level and speed-->
+							<!--if(level<10 && stopped == 0){-->
+								<!--level++;-->
+								<!--speedFactor+=2;-->
+								<!--levelContainer.innerHTML=level+"";-->
+								<!--clearInterval(engine);-->
+								<!--engine = setInterval(game,1000/speedFactor);-->
+							<!--}-->
+							<!--break;-->
+					<!--case 109: // press - to decrease level and speed-->
+							<!--if(level>1 && stopped == 0){-->
+								<!--level&#45;&#45;;-->
+								<!--speedFactor-=2;-->
+								<!--levelContainer.innerHTML=level+"";-->
+								<!--clearInterval(engine);-->
+								<!--engine = setInterval(game,1000/speedFactor);-->
+							<!--}-->
+							<!--break;-->
+				<!--}-->
+			<!--}-->
+
+		<!--</script>-->
 	</body>
 </html>

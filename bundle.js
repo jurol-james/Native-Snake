@@ -75,23 +75,15 @@ var Engine = {
     engine : null,
     score : 0,
     level : 1,
-    running : 1,
-    stopped : 0,
-    speedFactor : 10,
 
-    canvas : null,
-    snake : null,
-    food : null,
 
     init : function () {
 
-        this.canvas = Canvas;
-        this.snake = Snake;
-        this.food = Food;
 
-        this.canvas.init();
-        this.snake.init(this.canvas);
-        this.food.init(this.canvas);
+
+        Canvas.init();
+        Snake.init(Canvas);
+        Food.init(Canvas);
 
         this.score=0;
         this.level=1;
@@ -100,36 +92,37 @@ var Engine = {
         this.stopped = 0;
         this.engine = setInterval(this.run,1000/this.speedFactor);
 
-        this.canvas.scoreContainer.innerHTML = this.score+ "";
-        this.canvas.levelContainer.innerHTML = this.level+ "";
+        Canvas.levelContainer.innerHTML = this.level+ "";
 
         document.addEventListener("keydown", this.keyPush);
         document.addEventListener("keypress", this.keyPush);
 
     },
     run : function () {
-        this.snake.updatePosition(this.canvas);
 
-        this.canvas.updateCanvas();
+        Snake.updatePosition(Canvas);
 
-        this.food.renderGraphics(this.canvas);
+        Canvas.updateCanvas();
 
-        this.canvas.context.fillStyle="lime";
-        for(var i = 0; i< this.snake.trail.length; i++){
-            this.canvas.context.fillRect(this.snake.trail[i].x*this.canvas.gridSize, this.snake.trail[i].y*this.canvas.gridSize, gridSize-2, gridSize-2);
-            if(this.snake.trail[i].position.x == this.snake.position.x && this.snake.trail[i].position.y == this.snake.position.y){
+        Food.renderGraphics(Canvas);
+
+        Canvas.context.fillStyle="lime";
+        for(var i = 0; i< Snake.trail.length; i++){
+            Canvas.context.fillRect(Snake.trail[i].x * Canvas.gridSize, Snake.trail[i].y * Canvas.gridSize, Canvas.gridSize-2, Canvas.gridSize-2);
+            if(Snake.trail[i].x == Snake.position.x && Snake.trail[i].y == Snake.position.y){
                 this.stop();
             }
         }
 
-        this.snake.trail.push(this.position);
-        while (this.snake.trail.length > this.snake.tail){
-            this.snake.trail.shift();
+        Snake.trail.push({x:Snake.position.x, y: Snake.position.y});
+        while (Snake.trail.length > Snake.tail){
+            Snake.trail.shift();
         }
 
-        this.food.updatePosition(this.snake,this.canvas,this);
+        this.score = Food.updatePosition(Snake,Canvas,this);
+        Canvas.scoreContainer.innerHTML = this.score + "";
 
-        this.canvas.scoreContainer.innerHTML= this.score + "";
+
     },
     stop : function () {
         this.running = 0;
@@ -137,73 +130,74 @@ var Engine = {
         clearInterval(engine);
     },
     keyPush : function (event) {
+        var self = Engine;
         switch (event.keyCode){
             case 37:
             case 65:// left
-                if(direction!=0){
-                    xVelocity=-1;
-                    yVelocity=0;
-                    direction=0;
+                if(Snake.direction!=0){
+                    Snake.velocity.x=-1;
+                    Snake.velocity.y=0;
+                    Snake.direction=0;
                 }
                 break;
             case 38:
             case 87:// up
-                if(direction!=1){
-                    xVelocity=0;
-                    yVelocity=-1;
-                    direction=1;
+                if(Snake.direction!=1){
+                    Snake.velocity.x=0;
+                    Snake.velocity.y=-1;
+                    Snake.direction=1;
                 }
                 break;
             case 39:
             case 68:// right
-                if(direction!=0){
-                    xVelocity=1;
-                    yVelocity=0;
-                    direction = 0;
+                if(Snake.direction!=0){
+                    Snake.velocity.x=1;
+                    Snake.velocity.y=0;
+                    Snake.direction = 0;
                 }
                 break;
             case 40:
             case 83:// down
-                if(direction!=1){
-                    xVelocity=0;
-                    yVelocity=1;
-                    direction=1;
+                if(Snake.direction!=1){
+                    Snake.velocity.x=0;
+                    Snake.velocity.y=1;
+                    Snake.direction=1;
                 }
                 break;
             case 80: // press p to pause or resume
-                if(running == 1 && stopped==0){
-                    clearInterval(engine);
-                    running = 0;
+                if(this.running == 1 && this.stopped==0){
+                    clearInterval(setInterval(this.run,1000/this.speedFactor));
+                    this.running = 0;
                 }
-                else if(running ==0 && stopped==0){
-                    engine = setInterval(game,1000/speedFactor);
-                    running = 1;
+                else if(this.running ==0 && this.stopped==0){
+                    this.engine = setInterval(this.run,1000/this.speedFactor);
+                    this.running = 1;
                 }
                 else{
-                    init();
+                    self.init();
                 }
                 break;
             case 82: // press r to restart
-                if(stopped == 1){
-                    init();
+                if(this.stopped == 1){
+                    self.init();
                 }
                 break;
             case 107: // press + to increase level and speed
-                if(level<10 && stopped == 0){
-                    level++;
-                    speedFactor+=2;
-                    levelContainer.innerHTML=level+"";
-                    clearInterval(engine);
-                    engine = setInterval(game,1000/speedFactor);
+                if(this.level<10 && this.stopped == 0){
+                    this.level++;
+                    this.speedFactor+=2;
+                    Canvas.levelContainer.innerHTML=this.level+"";
+                    clearInterval(this.engine);
+                    this.engine = setInterval(this.run,1000/speedFactor);
                 }
                 break;
             case 109: // press - to decrease level and speed
-                if(level>1 && stopped == 0){
-                    level--;
-                    speedFactor-=2;
-                    levelContainer.innerHTML=level+"";
-                    clearInterval(engine);
-                    engine = setInterval(game,1000/speedFactor);
+                if(this.level>1 && this.stopped == 0){
+                    this.level--;
+                    this.speedFactor-=2;
+                    Canvas.levelContainer.innerHTML=this.level+"";
+                    clearInterval(this.engine);
+                    this.engine = setInterval(this.run,1000/speedFactor);
                 }
                 break;
         }
@@ -212,7 +206,7 @@ var Engine = {
 };
 
 Engine.init();
-alert("Jurol");
+
 
 /***/ }),
 /* 1 */
@@ -232,8 +226,8 @@ var Canvas = {
         this.context = this.canvas.getContext("2d");
         self.canvas.width=this.dimensions;
         self.canvas.height=this.dimensions;
-        self.gridSize=Math.sqrt(this.canvas.width);
-        self.tileCount=Math.sqrt(this.canvas.width);
+        self.gridSize=Math.sqrt(self.canvas.width);
+        self.tileCount=Math.sqrt(self.canvas.width);
     },
     updateCanvas:function () {
         this.context.fillStyle="black";
@@ -281,13 +275,13 @@ var Snake = {
         if(self.position.x < 0){
             self.position.x = canvas.tileCount - 1;
         }
-        if(self.position.x > canvas.tileCount-1){
+        if(self.position.x > canvas.tileCount - 1){
             self.position.x = 0;
         }
         if(self.position.y < 0){
             self.position.y = canvas.tileCount - 1;
         }
-        if(self.position.y > canvas.tileCount-1){
+        if(self.position.y > canvas.tileCount - 1){
             self.position.y = 0;
         }
 
@@ -308,26 +302,25 @@ var Food = {
     },
 
     init : function (canvas) {
-        alert("Jurol");
-        // var self=Food;
-        // self.position.x=Math.floor(Math.random()*canvas.tileCount);
-        // self.position.y=Math.floor(Math.random()*canvas.tileCount);
+        var self=Food;
+        self.position.x=Math.floor(Math.random()*canvas.tileCount);
+        self.position.y=Math.floor(Math.random()*canvas.tileCount);
     },
     renderGraphics : function (canvas) {
         canvas.context.fillStyle="yellow";
-        canvas.context.fillRect(this.position.x*canvas.gridSize, this.position.y*canvas.gridSize, gridSize-5, gridSize-5);
+        canvas.context.fillRect(this.position.x * canvas.gridSize, this.position.y * canvas.gridSize, canvas.gridSize-5, canvas.gridSize-5);
     },
     updatePosition : function (snake,canvas,engine) {
         if(this.position.x == snake.position.x && this.position.y == snake.position.y){
             snake.tail++;
             this.position.x = Math.floor(Math.random()*canvas.tileCount);
             this.position.y = Math.floor(Math.random()*canvas.tileCount);
-            engine.score += engine.level * 10;
+            return engine.level * 10;
         }
     }
-    
-    
 }
+
+module.exports = Food;
 
 /***/ })
 /******/ ]);
